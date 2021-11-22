@@ -1,0 +1,22 @@
+Porta ascolto:12345
+Porta invio:casuale
+2 porte separate
+
+FASE APERTURA
+client1:
+	comando;Nome_Mittente; --> chiamata non bloccante
+client2:
+	y;NOME_DESTINATARIO; --> se risponde posso accettare la connessione
+	n; --> se risponde che non posso accettare la connessione
+client1: --> se client2 risponde
+	y;
+	n; --> se ho annullato la connesione
+
+(se ho una connessione in attesa di riposta e mi arriva un'altra connessione la annullo)
+FASE DIALOGO
+	m;contenuto_messaggio;
+(prevedere l'espansione dei comandi, classi che ereditano da una classe base ed implementano il proprio metodo esegui)	
+	
+Fase chiusura
+(se riceve un messaggio da una comunicazione chiusa o mai aperta reinvio "c")
+	c;
