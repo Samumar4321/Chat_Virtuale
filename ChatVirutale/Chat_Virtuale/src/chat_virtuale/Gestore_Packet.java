@@ -40,22 +40,15 @@ public class Gestore_Packet extends Thread {
     }
 
     public void execute(DatagramPacket p) throws UnknownHostException, SocketException {
-        if (connectedIP == null || p.getAddress().equals(connectedIP)) {
-            byte[] buffer = p.getData();
-            String action = new String(buffer).split(";")[0];
-            System.out.println("ACTION: " + action);
+        byte[] buffer = p.getData();
+        String action = new String(buffer).split(";")[0];
+        System.out.println("ACTION: " + action);
+        if (action.equals("a")) {
             connectedIP = p.getAddress();
-            switch (action) {
-                case "a": {
-                    try {
-                        Messaggio_Apertura ma = new Messaggio_Apertura(p);
-                        ma.execute();
-                    } catch (SocketException ex) {
-                        Logger.getLogger(Gestore_Packet.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    break;
-                }
+            Messaggio_Apertura ma = new Messaggio_Apertura(p);
+            ma.execute();
+        } else if (p.getAddress().equals(connectedIP)) {
+            switch (action) {               
                 case "c": {
                     Messaggio_Chiusura mc = new Messaggio_Chiusura(p);
                     mc.execute();
@@ -69,6 +62,7 @@ public class Gestore_Packet extends Thread {
                 }
                 case "y": {
                     try {
+                        connectedIP = p.getAddress();
                         Messaggio_RispApertura mar = new Messaggio_RispApertura(p);
                         mar.execute();
                     } catch (SocketException ex) {
@@ -82,55 +76,51 @@ public class Gestore_Packet extends Thread {
                 }
 
             }
-        } else {
-            //invio all'ip sbagliato "c"
-            System.out.println("Uscito dallo switch senza gestire il pacchetto");
+//
+//            // if (connectedIP == null || p.getAddress().equals(connectedIP)) {
+//            switch (action) {
+//                case "a": {
+//                    try {
+//                        connectedIP = p.getAddress();
+//                        Messaggio_Apertura ma = new Messaggio_Apertura(p);
+//                        ma.execute();
+//                    } catch (SocketException ex) {
+//                        Logger.getLogger(Gestore_Packet.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//
+//                    break;
+//                }
+//                case "c": {
+//                    Messaggio_Chiusura mc = new Messaggio_Chiusura(p);
+//                    mc.execute();
+//                    connectedIP = null;
+//                    break;
+//                }
+//                case "m": {
+//                    Messaggio_Testo mt = new Messaggio_Testo(p);
+//                    mt.execute();
+//                    break;
+//                }
+//                case "y": {
+//                    try {
+//                        connectedIP = p.getAddress();
+//                        Messaggio_RispApertura mar = new Messaggio_RispApertura(p);
+//                        mar.execute();
+//                    } catch (SocketException ex) {
+//                        Logger.getLogger(Gestore_Packet.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    break;
+//                }
+//                case "n": {
+//                    connectedIP = null;
+//                    break;
+//                }
+//
+//            }
+//        } else {
+//            //invio all'ip sbagliato "c"
+//            System.out.println("Uscito dallo switch senza gestire il pacchetto");
+//        }
         }
     }
-    /*  @Override
-    public void run() {
-        System.out.println("Startato");
-        while (true) {
-
-            if (packets.size() > 0) {
-                System.out.println("Switch");
-                byte[] buffer = packets.get(0).getData();
-                String action = new String(buffer).split(";")[0];
-                System.out.println("ACTION: " + action);
-                switch (action) {
-                    case "a": {
-                        try {
-                            Messaggio_Apertura ma = new Messaggio_Apertura(packets.get(0));
-                            ma.execute();
-                        } catch (SocketException ex) {
-                            Logger.getLogger(Gestore_Packet.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        break;
-                    }
-                    case "c": {
-                        break;
-                    }
-                    case "m": {
-                        break;
-                    }
-                    case "y": {
-                        try {
-                            Messaggio_RispApertura mar = new Messaggio_RispApertura(packets.get(0));
-                            mar.execute();
-                        } catch (SocketException ex) {
-                            Logger.getLogger(Gestore_Packet.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        break;
-                    }
-                    case "n": {
-                        break;
-                    }
-
-                }
-                packets.remove(0);
-            }
-        }
-    }
-     */
 }

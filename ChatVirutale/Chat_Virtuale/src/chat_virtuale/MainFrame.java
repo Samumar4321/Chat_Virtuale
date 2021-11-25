@@ -134,10 +134,11 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
@@ -165,6 +166,8 @@ public class MainFrame extends javax.swing.JFrame {
                 byte[] buffer = str.getBytes();
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 InetAddress ip = InetAddress.getByName(ipname);
+                Gestore_Packet gp = Gestore_Packet.GetInstance();
+                gp.connectedIP = ip;
                 packet.setAddress(ip);
                 packet.setPort(666);
                 Condivisa.getInstance().serverInvio.send(packet);
@@ -175,9 +178,35 @@ public class MainFrame extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            String[] opt = {"OK", "ANNULLA"};
+            int choice = JOptionPane.showOptionDialog(this, "Connessione...", null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opt, opt[1]);
+
+            if (choice == 1) {
+                try {
+                    Condivisa c = Condivisa.getInstance();
+                    Gestore_Packet gp = Gestore_Packet.GetInstance();
+                    c.mittente = false;
+                    // TODO add your handling code here:               
+                    String str = "n;" + c.nome + ";";
+                    byte[] buffer = str.getBytes();
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                    InetAddress ip = InetAddress.getByName(ipname);
+                    gp.connectedIP = null;
+                    packet.setAddress(ip);
+                    packet.setPort(666);
+                    Condivisa.getInstance().serverInvio.send(packet);
+                } catch (SocketException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                JOptionPane.showMessageDialog(this, "Connessione annullata...");
+            }
+
         }
-        String[] opt = {"OK", "ANNULLA"};
-        int choice = JOptionPane.showOptionDialog(this, "Connessione...", null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opt, opt[1]);
 
     }//GEN-LAST:event_jButton1MouseClicked
 
@@ -203,7 +232,7 @@ public class MainFrame extends javax.swing.JFrame {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-////////                JOptionPane.showMessageDialog(this, "Connettersi con un host");
+                JOptionPane.showMessageDialog(this, "Connettersi con un host");
             }
         } catch (SocketException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -220,6 +249,8 @@ public class MainFrame extends javax.swing.JFrame {
             if (Condivisa.getInstance().connected) {
                 try {
                     Condivisa.getInstance().connected = false;
+                    Gestore_Packet gp = Gestore_Packet.GetInstance();
+                    gp.connectedIP = null;
                     System.out.println("MESSAGGIO INVIATO");
                     String ipname = Gestore_Packet.GetInstance().connectedIP.getHostName();
                     String str = "c;";
