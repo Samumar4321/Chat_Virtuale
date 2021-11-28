@@ -24,7 +24,7 @@ public class Messaggio {
     public Messaggio(DatagramPacket p) throws SocketException, UnknownHostException {
         packet = p;
         //lastPort = packet.getPort();
-        lastPort = 666;
+        lastPort = 12345;
         lastIP = packet.getAddress();
         this.c = Condivisa.getInstance();
     }

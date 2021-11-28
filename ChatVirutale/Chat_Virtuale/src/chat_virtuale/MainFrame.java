@@ -4,8 +4,11 @@
  */
 package chat_virtuale;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.IOException;
@@ -20,7 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 
@@ -33,6 +39,8 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    int port = 12345;
+
     public MainFrame() throws SocketException, UnknownHostException {
         initComponents();
         Condivisa c = Condivisa.getInstance();
@@ -169,7 +177,7 @@ public class MainFrame extends javax.swing.JFrame {
                 Gestore_Packet gp = Gestore_Packet.GetInstance();
                 gp.connectedIP = ip;
                 packet.setAddress(ip);
-                packet.setPort(666);
+                packet.setPort(port);
                 Condivisa.getInstance().serverInvio.send(packet);
             } catch (SocketException ex) {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -194,7 +202,7 @@ public class MainFrame extends javax.swing.JFrame {
                     InetAddress ip = InetAddress.getByName(ipname);
                     gp.connectedIP = null;
                     packet.setAddress(ip);
-                    packet.setPort(666);
+                    packet.setPort(port);
                     Condivisa.getInstance().serverInvio.send(packet);
                 } catch (SocketException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -222,7 +230,7 @@ public class MainFrame extends javax.swing.JFrame {
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     InetAddress ip = InetAddress.getByName(ipname);
                     packet.setAddress(ip);
-                    packet.setPort(666);
+                    packet.setPort(port);
                     Condivisa.getInstance().serverInvio.send(packet);
                 } catch (SocketException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -250,16 +258,16 @@ public class MainFrame extends javax.swing.JFrame {
                 try {
                     Condivisa.getInstance().connected = false;
                     Gestore_Packet gp = Gestore_Packet.GetInstance();
-                    gp.connectedIP = null;
-                    System.out.println("MESSAGGIO INVIATO");
+                    System.out.println("MESSAGGIO CHIUSURA INVIATO");
                     String ipname = Gestore_Packet.GetInstance().connectedIP.getHostName();
                     String str = "c;";
                     byte[] buffer = str.getBytes();
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     InetAddress ip = InetAddress.getByName(ipname);
                     packet.setAddress(ip);
-                    packet.setPort(666);
+                    packet.setPort(port);
                     Condivisa.getInstance().serverInvio.send(packet);
+                    gp.connectedIP = null;
                 } catch (SocketException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnknownHostException ex) {
@@ -322,11 +330,13 @@ public class MainFrame extends javax.swing.JFrame {
         ThreadGrafica tg = new ThreadGrafica();
         tg.start();
         listen.start();
-        //Gestore_Packet gp = new Gestore_Packet();
-        //gp.start();
 
     }
     JPanel panel = new JPanel();
+    GridBagConstraints gc = new GridBagConstraints();
+    int y = 0;
+    int i = 0;
+    int quant = 2;
 
     @Override
     public void paint(Graphics g) {
@@ -339,16 +349,28 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (UnknownHostException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!c.messaggio.equals("")) {
-
-            JLabel label = new JLabel();
-            label.setText(c.messaggio);
-            label.setLocation(0, 30);
-            panel.add(label);
-            jScrollPane1.getViewport().add(panel);
-            jTextArea1.setText(c.messaggio);
-            c.messaggio = "";
+        //if (!c.messaggio.equals("")) {
+        JTextArea text = new JTextArea(1, 20);
+        text.setEditable(false);
+        TitledBorder border1 = new TitledBorder("TEXT");
+        border1.setTitleJustification(TitledBorder.CENTER);
+        //text.setBorder(border1);
+        text.setLineWrap(true);
+        //text.setSize(100,HEIGHT);
+        text.setText("ciao come stai tutto bene" + "\n" + "ciao come va");
+//            text.setText(c.messaggio);
+        gc.gridx = i;
+        gc.gridy = y;
+        if (i == 0) {
+            i += quant;
+        } else if (i > 0) {
+            i -= quant;
         }
+        y++;
+        panel.add(text, gc);
+        jScrollPane1.getViewport().add(panel);
+        c.messaggio = "";
+        // }
         if (!c.nomeDestinatario.equals("")) {
             //System.out.println(c.nomeDestinatario);
             TitledBorder border = new TitledBorder(c.nomeDestinatario);
@@ -359,7 +381,6 @@ public class MainFrame extends javax.swing.JFrame {
             this.revalidate();
             //jLabel1.setText(c.nomeDestinatario);
         }
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
