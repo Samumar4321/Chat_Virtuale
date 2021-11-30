@@ -39,7 +39,8 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
-    int port = 12345;
+    int port = 666;
+    int y = 0;
 
     public MainFrame() throws SocketException, UnknownHostException {
         initComponents();
@@ -221,7 +222,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         try {
             // TODO add your handling code here:
-            if (Condivisa.getInstance().connected) {
+            if (Condivisa.getInstance().connected && jTextArea1.getText() != "") {
                 try {
                     System.out.println("MESSAGGIO INVIATO");
                     String ipname = Gestore_Packet.GetInstance().connectedIP.getHostName();
@@ -238,7 +239,16 @@ public class MainFrame extends javax.swing.JFrame {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }                
+                JTextArea text = new JTextArea(1, 20);
+                text.setEditable(false);
+                text.setLineWrap(true);
+                text.setText(jTextArea1.getText());
+                gc.gridx = 1;
+                gc.gridy = y;
+                y++;
+                panel.add(text, gc);
+                jScrollPane1.getViewport().add(panel);              
             } else {
                 JOptionPane.showMessageDialog(this, "Connettersi con un host");
             }
@@ -334,9 +344,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
     JPanel panel = new JPanel();
     GridBagConstraints gc = new GridBagConstraints();
-    int y = 0;
     int i = 0;
-    int quant = 2;
 
     @Override
     public void paint(Graphics g) {
@@ -349,40 +357,26 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (UnknownHostException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //if (!c.messaggio.equals("")) {
-        JTextArea text = new JTextArea(1, 20);
-        text.setEditable(false);
-        TitledBorder border1 = new TitledBorder("TEXT");
-        border1.setTitleJustification(TitledBorder.CENTER);
-        //text.setBorder(border1);
-        text.setLineWrap(true);
-        //text.setSize(100,HEIGHT);
-        text.setText("ciao come stai tutto bene" + "\n" + "ciao come va");
-//            text.setText(c.messaggio);
-        gc.gridx = i;
-        gc.gridy = y;
-        if (i == 0) {
-            i += quant;
-        } else if (i > 0) {
-            i -= quant;
+        if (!c.messaggio.equals("")) {
+            JTextArea text = new JTextArea(1, 20);
+            text.setEditable(false);
+            text.setLineWrap(true);
+            text.setText(c.messaggio);
+            gc.gridx = 0;
+            gc.gridy = y;
+            y++;
+            panel.add(text, gc);
+            jScrollPane1.getViewport().add(panel);
+            c.messaggio = "";
         }
-        y++;
-        panel.add(text, gc);
-        jScrollPane1.getViewport().add(panel);
-        c.messaggio = "";
-        // }
         if (!c.nomeDestinatario.equals("")) {
-            //System.out.println(c.nomeDestinatario);
             TitledBorder border = new TitledBorder(c.nomeDestinatario);
             border.setTitleJustification(TitledBorder.CENTER);
             jScrollPane1.setBorder(border);
-            // jScrollPane1.add(panel);
-            // jScrollPane1.revalidate();
             this.revalidate();
-            //jLabel1.setText(c.nomeDestinatario);
+
         }
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
