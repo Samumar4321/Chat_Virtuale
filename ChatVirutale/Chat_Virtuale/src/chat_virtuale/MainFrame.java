@@ -56,6 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
         c.nome = s;
         System.out.println("NOME: " + s);
         panel.setLayout(new GridBagLayout());
+        panel.setDoubleBuffered(true);
     }
 
     /**
@@ -239,7 +240,7 @@ public class MainFrame extends javax.swing.JFrame {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }                
+                }
                 JTextArea text = new JTextArea(1, 20);
                 text.setEditable(false);
                 text.setLineWrap(true);
@@ -247,8 +248,9 @@ public class MainFrame extends javax.swing.JFrame {
                 gc.gridx = 1;
                 gc.gridy = y;
                 y++;
+
                 panel.add(text, gc);
-                jScrollPane1.getViewport().add(panel);              
+                jScrollPane1.getViewport().add(panel);
             } else {
                 JOptionPane.showMessageDialog(this, "Connettersi con un host");
             }
