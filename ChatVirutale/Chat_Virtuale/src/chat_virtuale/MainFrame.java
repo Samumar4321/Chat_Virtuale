@@ -7,10 +7,12 @@ package chat_virtuale;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -44,6 +46,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     public MainFrame() throws SocketException, UnknownHostException {
         initComponents();
+        this.getContentPane().setBackground(Color.gray);
+        jScrollPane1.getViewport().setBackground(Color.gray);       
         Condivisa c = Condivisa.getInstance();
         c.setFrame(this);
         this.setTitle("CHAT_VIRTUALE");
@@ -54,6 +58,8 @@ public class MainFrame extends javax.swing.JFrame {
                 JOptionPane.PLAIN_MESSAGE
         );
         c.nome = s;
+        Insets ins = new Insets(3, 0, 0, 3);
+        gc.insets = ins;
         System.out.println("NOME: " + s);
         panel.setLayout(new GridBagLayout());
         panel.setDoubleBuffered(true);
@@ -77,7 +83,10 @@ public class MainFrame extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 0, 0));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
 
+        jScrollPane1.setBackground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setBorder(null);
         jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setToolTipText("");
@@ -94,8 +103,10 @@ public class MainFrame extends javax.swing.JFrame {
 
         jTextField1.setAutoscrolls(false);
 
+        jTextArea1.setBackground(new java.awt.Color(51, 51, 51));
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jTextArea1.setForeground(new java.awt.Color(255, 255, 255));
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setWrapStyleWord(true);
@@ -241,11 +252,17 @@ public class MainFrame extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                JTextArea text = new JTextArea(1, 20);
+                JTextArea text = new JTextArea(1, 17);
+                Color c = new Color(0, 102, 51);
+                text.setBackground(c);
+                text.setForeground(Color.WHITE);
+                Font f = new Font("Italic", Font.ITALIC, 15);
+                text.setFont(f);
                 text.setEditable(false);
                 text.setLineWrap(true);
                 text.setText(jTextArea1.getText());
                 gc.gridx = 1;
+
                 gc.gridy = y;
                 y++;
 
@@ -280,7 +297,7 @@ public class MainFrame extends javax.swing.JFrame {
                     packet.setPort(port);
                     Condivisa.getInstance().serverInvio.send(packet);
                     gp.connectedIP = null;
-                    panel = new JPanel();
+                    panel = new JPanel();                  
                     panel.setLayout(new GridBagLayout());
                     panel.setDoubleBuffered(true);
                     jScrollPane1.getViewport().add(panel);
@@ -366,8 +383,11 @@ public class MainFrame extends javax.swing.JFrame {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (!c.messaggio.equals("")) {
-            JTextArea text = new JTextArea(1, 20);
-            text.setEditable(false);
+            JTextArea text = new JTextArea(1, 17);
+            Font f = new Font("Italic", Font.ITALIC, 15);
+            text.setBackground(Color.DARK_GRAY);
+            text.setForeground(Color.WHITE);
+            text.setFont(f);
             text.setLineWrap(true);
             text.setText(c.messaggio);
             gc.gridx = 0;
@@ -378,7 +398,7 @@ public class MainFrame extends javax.swing.JFrame {
             c.messaggio = "";
         }
         if (!c.nomeDestinatario.equals("")) {
-            TitledBorder border = new TitledBorder(c.nomeDestinatario);
+            TitledBorder border = new TitledBorder(c.nomeDestinatario.toUpperCase());
             border.setTitleJustification(TitledBorder.CENTER);
             jScrollPane1.setBorder(border);
             this.revalidate();
