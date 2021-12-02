@@ -112,6 +112,7 @@ public class MainFrameProva2 extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         try {
+            //
             // TODO add your handling code here:
             String ipname = jTextField1.getText();
             System.out.println("P inviato\n");
