@@ -28,12 +28,18 @@ public class Messaggio_Apertura extends Messaggio {
 
     @Override
     public void execute() {
-        c.connected = true;
         System.out.println("DENTRO MESS_APER_EXEC");
         String[] csv = new String(packet.getData()).split(";");
-        c.nomeDestinatario = csv[1];
-        JOptionPane.showOptionDialog(c.frame, "Desideri accettare la connessione con: \n" + csv[1], null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opt, opt[1]);
-        String str = ("y;" + c.nome + ";");
+        int choice = JOptionPane.showOptionDialog(c.frame, "Desideri accettare la connessione con: \n" + csv[1], null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opt, opt[1]);
+        String str = "";
+        if (choice == 0) {
+            c.connected = true;
+            str = ("y;" + c.nome + ";");
+            c.nomeDestinatario = csv[1];
+
+        } else {
+            str = "n;";
+        }
         try {
             send(str);
         } catch (IOException ex) {

@@ -280,6 +280,12 @@ public class MainFrame extends javax.swing.JFrame {
                     packet.setPort(port);
                     Condivisa.getInstance().serverInvio.send(packet);
                     gp.connectedIP = null;
+                    panel = new JPanel();
+                    panel.setLayout(new GridBagLayout());
+                    panel.setDoubleBuffered(true);
+                    jScrollPane1.getViewport().add(panel);
+                    Condivisa.getInstance().nomeDestinatario = "";
+                    jScrollPane1.setBorder(null);
                 } catch (SocketException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnknownHostException ex) {
